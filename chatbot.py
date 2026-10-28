@@ -142,7 +142,7 @@ with chat_block:
 upl=None
 h = st.sidebar.title("Arsalan's AI v1.0")
 if st.checkbox("Did you want to Upload File?",value=False):
-    upl=st.file_uploader("Upload File!",type=["jpg","png","txt","csv"])
+    upl=st.file_uploader("Upload File!",type=["jpg","png"])
 user = st.chat_input("Ask Arsalan's AI:")
 langs = st.sidebar.selectbox("Voice Language selector:", ["English", "Urdu"])
 h2 = st.sidebar.header("Additional utilities")

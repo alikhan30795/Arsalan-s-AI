@@ -150,7 +150,7 @@ if st.checkbox("Did you want to Upload File?",value=False):
     upl=st.file_uploader("Upload File!",type=["jpg","png"])
 speak = st.checkbox("Want to speak?")
 
-user = st.chat_input("Ask Arsalan's AI:", value=st.session_state.chat_input_val)
+user = st.chat_input("Ask Arsalan's AI:")
 if speak:
     text_from_mic = speech_to_text(
         language='en', 

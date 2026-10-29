@@ -131,6 +131,8 @@ if 'memory' not in st.session_state:
     st.session_state.memory=[]
 if "chat_input_val" not in st.session_state:
     st.session_state.chat_input_val = ""
+if "input_counter" not in st.session_state:
+    st.session_state.input_counter = 0
 
 chat_block = st.container()
 with chat_block:
@@ -150,7 +152,7 @@ if st.checkbox("Did you want to Upload File?",value=False):
     upl=st.file_uploader("Upload File!",type=["jpg","png"])
 speak = st.checkbox("Want to speak?")
 
-user = st.chat_input("Ask Arsalan's AI:")
+
 if speak:
     text_from_mic = speech_to_text(
         language='en', 
@@ -158,10 +160,14 @@ if speak:
         stop_prompt="🟢 Stop & Process",
         key='speech'
     )
-    user += text_from_mic
+    if text_from_mic and text_from_mic != st.session_state.chat_input_val:
+        st.session_state.chat_input_val = text_from_mic
+        st.session_state.input_counter += 1
     if text_from_mic:
         st.session_state.chat_input_val = text_from_mic
-
+user = st.chat_input("Ask Arsalan's AI:", 
+    value=st.session_state.chat_input_val if st.session_state.chat_input_val else None, 
+    key=f"chat_input_{st.session_state.input_counter}")
 langs = st.sidebar.selectbox("Voice Language selector:", ["English", "Urdu"])
 st.sidebar.write("---")
 h2 = st.sidebar.header("Additional utilities")

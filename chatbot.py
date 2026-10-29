@@ -146,15 +146,18 @@ if st.checkbox("Did you want to Upload File?",value=False):
     upl=st.file_uploader("Upload File!",type=["jpg","png"])
 user = st.chat_input("Ask Arsalan's AI:")
 langs = st.sidebar.selectbox("Voice Language selector:", ["English", "Urdu"])
+st.sidebar.write("---")
 h2 = st.sidebar.header("Additional utilities")
 cal = st.sidebar.link_button("Calculator", "https://alikhan30795.github.io/Calculator-JS/")
 psc = st.sidebar.link_button("Password Strength checker", "https://alikhan30795.github.io/psc/")
 tg = st.sidebar.link_button("Tables Generator", "https://alikhan30795.github.io/Tables/")
 gg = st.sidebar.link_button("Guessing game", "https://alikhan30795.github.io/Guess/")
+st.sidebar.write("---")
 st.sidebar.header("Clear chat")
 if st.sidebar.button("Clear Chat 🗑️"):
     st.session_state.memory = []
     st.rerun()
+st.sidebar.write("---")
 st.sidebar.header("AI Results in Coding")
 st.sidebar.link_button("Website development using this model","https://arsalan-store-e9ux4x9n2-alikhan30795.vercel.app/")
 st.sidebar.header("ℹ️ Developer Info")
@@ -221,7 +224,6 @@ if user:
                     st.rerun()
                 except Exception as e:
                     st.error(f"An Error Occured! Please try again! {e}")
-st.sidebar.write("---")
 chat_text = ""
 for chat in st.session_state.memory:
     chat_text += f"{chat['role']}: {chat['text']}\n"
@@ -233,3 +235,4 @@ if chat_text:
         file_name="arsalan_ai_chat.txt",
         mime="text/plain",
     )
+st.sidebar.write("---")

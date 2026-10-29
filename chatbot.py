@@ -160,6 +160,7 @@ if st.sidebar.button("Clear Chat 🗑️"):
 st.sidebar.write("---")
 st.sidebar.header("AI Results in Coding")
 st.sidebar.link_button("Website development using this model","https://arsalan-store-e9ux4x9n2-alikhan30795.vercel.app/")
+st.sidebar.write("---")
 st.sidebar.header("ℹ️ Developer Info")
 st.sidebar.write("Created by Arsalan Ali Khan — 9th Class Genius 😎")
 st.sidebar.write("---")

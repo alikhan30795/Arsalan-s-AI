@@ -159,7 +159,7 @@ if speak:
     if text_from_mic:
         st.session_state.chat_input_val = text_from_mic
 
-user = st.chat_input("Ask Arsalan's AI:", value=st.session_state.chat_input_val)
+user = st.chat_input("Ask Arsalan's AI:", value=st.session_state.chat_input_val,key=f"chat_input_{st.session_state.chat_input_val}")
 langs = st.sidebar.selectbox("Voice Language selector:", ["English", "Urdu"])
 st.sidebar.write("---")
 h2 = st.sidebar.header("Additional utilities")

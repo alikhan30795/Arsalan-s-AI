@@ -5,7 +5,7 @@ from google import genai
 from PIL import Image
 st.set_page_config(
     page_title="Arsalan's AI",
-    page_icon="✨"
+    page_icon="images.jpg"
 )
 client = genai.Client(api_key=st.secrets['ARSALAN'])
 st.logo("images.jpg")
@@ -151,18 +151,6 @@ cal = st.sidebar.link_button("Calculator", "https://alikhan30795.github.io/Calcu
 psc = st.sidebar.link_button("Password Strength checker", "https://alikhan30795.github.io/psc/")
 tg = st.sidebar.link_button("Tables Generator", "https://alikhan30795.github.io/Tables/")
 gg = st.sidebar.link_button("Guessing game", "https://alikhan30795.github.io/Guess/")
-chat_text = ""
-for chat in st.session_state.memory:
-    chat_text += f"{chat['role']}: {chat['text']}\n"
-if chat_text: 
-    st.sidebar.header("Download Chat!")
-    st.sidebar.download_button(
-        label="Download Chat History 📄",
-        data=chat_text,
-        file_name="arsalan_ai_chat.txt",
-        mime="text/plain",
-        on_click="ignore"
-    )
 st.sidebar.header("Clear chat")
 if st.sidebar.button("Clear Chat 🗑️"):
     st.session_state.memory = []
@@ -244,5 +232,4 @@ if chat_text:
         data=chat_text,
         file_name="arsalan_ai_chat.txt",
         mime="text/plain",
-        on_click="ignore"
     )

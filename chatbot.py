@@ -158,7 +158,7 @@ if speak:
         stop_prompt="🟢 Stop & Process",
         key='speech'
     )
-    user += text_from_mic.text
+    user += text_from_mic
     if text_from_mic:
         st.session_state.chat_input_val = text_from_mic
 

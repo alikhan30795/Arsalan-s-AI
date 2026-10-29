@@ -3,11 +3,12 @@ import io
 from gtts import gTTS
 from google import genai
 from PIL import Image
-client = genai.Client(api_key=st.secrets['ARSALAN'])
 st.set_page_config(
     page_title="Arsalan's AI",
     page_icon="✨"
 )
+client = genai.Client(api_key=st.secrets['ARSALAN'])
+st.logo("images.jpg")
 st.markdown("""
 <style>
     html, body, [data-testid="stAppViewContainer"] {
@@ -229,7 +230,19 @@ if user:
                     tts.write_to_fp(pocket)
                     st.session_state.memory.append({"role": "User", "text": user})
                     st.session_state.memory.append({"role": "AI", "text": response.text, "audio": pocket.getvalue()})
-                    with st.chat_message('assistant'):
-                        st.write(f"**AI:** {response.text}")
+                    st.rerun()
                 except Exception as e:
                     st.error(f"An Error Occured! Please try again! {e}")
+st.sidebar.write("---")
+chat_text = ""
+for chat in st.session_state.memory:
+    chat_text += f"{chat['role']}: {chat['text']}\n"
+if chat_text: 
+    st.sidebar.header("Download Chat!")
+    st.sidebar.download_button(
+        label="Download Chat History 📄",
+        data=chat_text,
+        file_name="arsalan_ai_chat.txt",
+        mime="text/plain",
+        on_click="ignore"
+    )

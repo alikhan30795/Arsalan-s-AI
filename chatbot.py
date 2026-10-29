@@ -3,6 +3,7 @@ import io
 from gtts import gTTS
 from google import genai
 from PIL import Image
+from streamlit_mic_recorder import speech_to_text
 st.set_page_config(
     page_title="Arsalan's AI",
     page_icon="images.jpg"
@@ -128,6 +129,9 @@ st.title("Arsalan's AI v1.0")
 st.write("Made by Arsalan Ali Khan. Teenager genius.")
 if 'memory' not in st.session_state:
     st.session_state.memory=[]
+if "chat_input_val" not in st.session_state:
+    st.session_state.chat_input_val = ""
+
 chat_block = st.container()
 with chat_block:
     for chat in st.session_state.memory:
@@ -144,7 +148,18 @@ upl=None
 h = st.sidebar.title("Arsalan's AI v1.0")
 if st.checkbox("Did you want to Upload File?",value=False):
     upl=st.file_uploader("Upload File!",type=["jpg","png"])
-user = st.chat_input("Ask Arsalan's AI:")
+speak = st.checkbox("Want to speak?")
+if speak:
+    text_from_mic = speech_to_text(
+        language='en', 
+        start_prompt="🔴 Start Recording",
+        stop_prompt="🟢 Stop & Process",
+        key='speech'
+    )
+    if text_from_mic:
+        st.session_state.chat_input_val = text_from_mic
+
+user = st.chat_input("Ask Arsalan's AI:", value=st.session_state.chat_input_val)
 langs = st.sidebar.selectbox("Voice Language selector:", ["English", "Urdu"])
 st.sidebar.write("---")
 h2 = st.sidebar.header("Additional utilities")
@@ -220,6 +235,7 @@ if user:
                     tts = gTTS(text=response.text[:200], lang=sellang)
                     pocket = io.BytesIO()
                     tts.write_to_fp(pocket)
+                    st.session_state.chat_input_val = ""
                     st.session_state.memory.append({"role": "User", "text": user})
                     st.session_state.memory.append({"role": "AI", "text": response.text, "audio": pocket.getvalue()})
                     st.rerun()

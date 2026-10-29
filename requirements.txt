@@ -2,3 +2,4 @@ streamlit
 gTTS
 google-genai
 Pillow
+streamlit-mic-recorder

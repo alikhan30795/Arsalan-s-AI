@@ -190,7 +190,7 @@ if prompt_input:
                     mime_type="audio/wav"
                 )
                 stt_res = client.models.generate_content(
-                    model="gemini-2.5-flash",
+                    model="gemini-1.5-flash",
                     contents=[
                         audio_part, 
                         "You are an expert speech recognition system. Transcribe the audio exactly into text format without any explanation."
@@ -228,7 +228,7 @@ if prompt_input:
             with st.spinner("Arsalan's AI is thinking..."):
                 try:
                     response = client.models.generate_content(
-                        model="gemini-2.5-flash",
+                        model="gemini-1.5-flash",
                         contents=inp
                     )
                     reply = response.text

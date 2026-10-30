@@ -3,12 +3,11 @@ import io
 from gtts import gTTS
 from google import genai
 from PIL import Image
-from streamlit_mic_recorder import speech_to_text
 st.set_page_config(
     page_title="Arsalan's AI",
     page_icon="images.jpg"
 )
-client = genai.Client(api_key=st.secrets['ARSALAN'])
+client = genai.Client(api_key=st.secrets["ARSALAN"])
 st.logo("images.jpg")
 st.markdown("""
 <style>
@@ -129,11 +128,6 @@ st.title("Arsalan's AI v1.0")
 st.write("Made by Arsalan Ali Khan. Teenager genius.")
 if 'memory' not in st.session_state:
     st.session_state.memory=[]
-if "chat_input_val" not in st.session_state:
-    st.session_state.chat_input_val = ""
-if "input_counter" not in st.session_state:
-    st.session_state.input_counter = 0
-
 chat_block = st.container()
 with chat_block:
     for chat in st.session_state.memory:
@@ -147,27 +141,13 @@ with chat_block:
                 st.audio(chat['audio'], format='audio/mp3')
     st.write("___________________________________________")
 upl=None
+vi=None
 h = st.sidebar.title("Arsalan's AI v1.0")
 if st.checkbox("Did you want to Upload File?",value=False):
     upl=st.file_uploader("Upload File!",type=["jpg","png"])
-speak = st.checkbox("Want to speak?")
-
-
-if speak:
-    text_from_mic = speech_to_text(
-        language='en', 
-        start_prompt="🔴 Start Recording",
-        stop_prompt="🟢 Stop & Process",
-        key='speech'
-    )
-    if text_from_mic and text_from_mic != st.session_state.chat_input_val:
-        st.session_state.chat_input_val = text_from_mic
-        st.session_state.input_counter += 1
-    if text_from_mic:
-        st.session_state.chat_input_val = text_from_mic
-user = st.chat_input("Ask Arsalan's AI:", 
-    value=st.session_state.chat_input_val if st.session_state.chat_input_val else None, 
-    key=f"chat_input_{st.session_state.input_counter}")
+if st.checkbox("Did you want to Speak?",value=False):
+    vi=st.audio_input("Speak!")
+user = st.chat_input("Ask Arsalan's AI!")
 langs = st.sidebar.selectbox("Voice Language selector:", ["English", "Urdu"])
 st.sidebar.write("---")
 h2 = st.sidebar.header("Additional utilities")
@@ -193,6 +173,9 @@ if user:
         img=Image.open(upl)
         inp.append(img)
         inp.append(f"Analyze The Image based on User's Request{user}")
+    if vi is not None:
+        inp.append(vi.value)
+        inp.append(f"Listen audio and give response based on it")
     else:
         inp.append(user)
     user_lower = user.lower()

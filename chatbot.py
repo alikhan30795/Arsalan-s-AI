@@ -183,12 +183,12 @@ if prompt_input:
     if prompt_input.audio:
         with st.spinner("Converting Voice to Text..."):
             try:
-                audio_data = prompt_input.audio.read()
+                audio_data = prompt_input.audio.getvalue()
                 transcribe_prompt = "Transcribe this audio strictly into text. Do not add any extra explanation or greeting."
                 audio_part = {"data": audio_data, "mime_type": "audio/wav"}
                 
                 stt_res = client.models.generate_content(
-                    model="gemini-3.5-flash-lite",
+                    model="gemini-2.5-flash",
                     contents=[audio_part, transcribe_prompt]
                 )
                 final_user_text = stt_res.text.strip()

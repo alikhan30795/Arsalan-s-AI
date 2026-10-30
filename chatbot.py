@@ -175,7 +175,7 @@ if user:
         inp.append(f"Analyze The Image based on User's Request{user}")
     if vi is not None:
         inp.append(vi.value)
-        user +='Listen audio and give response based on it'
+        user.value = vi.text
     else:
         inp.append(user)
     user_lower = user.lower()

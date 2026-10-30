@@ -2,6 +2,7 @@ import streamlit as st
 import io
 from gtts import gTTS
 from google import genai
+from google.genai import types
 from PIL import Image
 
 st.set_page_config(
@@ -183,17 +184,20 @@ if prompt_input:
     if prompt_input.audio:
         with st.spinner("Converting Voice to Text..."):
             try:
-                audio_data = prompt_input.audio.getvalue()
-                transcribe_prompt = "Transcribe this audio strictly into text. Do not add any extra explanation or greeting."
-                audio_part = {"data": audio_data, "mime_type": "audio/wav"}
-                
+                audio_bytes = prompt_input.audio.read()
+                audio_part = types.Part.from_bytes(
+                    data=audio_bytes,
+                    mime_type="audio/wav"
+                )
                 stt_res = client.models.generate_content(
                     model="gemini-2.5-flash",
-                    contents=[audio_part, transcribe_prompt]
+                    contents=[
+                        audio_part, 
+                        "You are an expert speech recognition system. Transcribe the audio exactly into text format without any explanation."
+                    ]
                 )
                 final_user_text = stt_res.text.strip()
             except Exception as e:
-                st.error(f"Voice Recognition Error: {e}")
                 final_user_text = "Audio Message"
     elif prompt_input.text:
         final_user_text = prompt_input.text
@@ -224,7 +228,7 @@ if prompt_input:
             with st.spinner("Arsalan's AI is thinking..."):
                 try:
                     response = client.models.generate_content(
-                        model="gemini-3.5-flash-lite",
+                        model="gemini-2.5-flash",
                         contents=inp
                     )
                     reply = response.text
@@ -237,15 +241,15 @@ if prompt_input:
             tts = gTTS(text=reply, lang=lang_code, slow=False)
             tts.write_to_fp(audio_fp)
             audio_fp.seek(0)
-            audio_bytes = audio_fp.read()
+            audio_bytes_output = audio_fp.read()
         except Exception as e:
-            audio_bytes = None
+            audio_bytes_output = None
 
         st.session_state.memory.append({"role": "User", "text": final_user_text})
         
         ai_memory_data = {"role": "AI", "text": reply}
-        if audio_bytes:
-            ai_memory_data["audio"] = audio_bytes
+        if audio_bytes_output:
+            ai_memory_data["audio"] = audio_bytes_output
             
         st.session_state.memory.append(ai_memory_data)
         st.rerun()

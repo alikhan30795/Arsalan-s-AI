@@ -3,12 +3,15 @@ import io
 from gtts import gTTS
 from google import genai
 from PIL import Image
+
 st.set_page_config(
     page_title="Arsalan's AI",
     page_icon="images.jpg"
 )
+
 client = genai.Client(api_key=st.secrets["ARSALAN"])
 st.logo("images.jpg")
+
 st.markdown("""
 <style>
     html, body, [data-testid="stAppViewContainer"] {
@@ -124,14 +127,17 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+
 st.title("Arsalan's AI v1.0")
 st.write("Made by Arsalan Ali Khan. Teenager genius.")
+
 if 'memory' not in st.session_state:
-    st.session_state.memory=[]
+    st.session_state.memory = []
+
 chat_block = st.container()
 with chat_block:
     for chat in st.session_state.memory:
-        if chat['role']=="User":
+        if chat['role'] == "User":
             with st.chat_message('user'):
                 st.write(f"**User:** {chat['text']}")
         elif chat['role'] == "AI":
@@ -140,107 +146,106 @@ with chat_block:
             if "audio" in chat:
                 st.audio(chat['audio'], format='audio/mp3')
     st.write("___________________________________________")
-upl=None
-vi=None
+
+upl = None
 h = st.sidebar.title("Arsalan's AI v1.0")
-if st.checkbox("Did you want to Upload File?",value=False):
-    upl=st.file_uploader("Upload File!",type=["jpg","png"])
-if st.checkbox("Did you want to Speak?",value=False):
-    vi=st.audio_input("Speak!")
-user = st.chat_input("Ask Arsalan's AI!")
+
+if st.checkbox("Did you want to Upload File?", value=False):
+    upl = st.file_uploader("Upload File!", type=["jpg", "png"])
+
+prompt_input = st.chat_input("Ask Arsalan's AI or click mic to speak!", accept_audio=True)
+
 langs = st.sidebar.selectbox("Voice Language selector:", ["English", "Urdu"])
 st.sidebar.write("---")
 h2 = st.sidebar.header("Additional utilities")
-cal = st.sidebar.link_button("Calculator", "https://alikhan30795.github.io/Calculator-JS/")
-psc = st.sidebar.link_button("Password Strength checker", "https://alikhan30795.github.io/psc/")
-tg = st.sidebar.link_button("Tables Generator", "https://alikhan30795.github.io/Tables/")
-gg = st.sidebar.link_button("Guessing game", "https://alikhan30795.github.io/Guess/")
+cal = st.sidebar.link_button("Calculator", "https://github.io")
+psc = st.sidebar.link_button("Password Strength checker", "https://github.io")
+tg = st.sidebar.link_button("Tables Generator", "https://github.io")
+gg = st.sidebar.link_button("Guessing game", "https://github.io")
 st.sidebar.write("---")
 st.sidebar.header("Clear chat")
+
 if st.sidebar.button("Clear Chat 🗑️"):
     st.session_state.memory = []
     st.rerun()
+
 st.sidebar.write("---")
 st.sidebar.header("AI Results in Coding")
-st.sidebar.link_button("Website development using this model","https://arsalan-store-e9ux4x9n2-alikhan30795.vercel.app/")
+st.sidebar.link_button("Website development using this model", "https://vercel.app")
 st.sidebar.write("---")
 st.sidebar.header("ℹ️ Developer Info")
 st.sidebar.write("Created by Arsalan Ali Khan — 9th Class Genius 😎")
 st.sidebar.write("---")
-if user:
-    inp=[]
-    if upl is not None:
-        img=Image.open(upl)
-        inp.append(img)
-        inp.append(f"Analyze The Image based on User's Request{user}")
-    if vi is not None:
-        inp.append(vi.value)
-        user.value = vi.text
-    else:
-        inp.append(user)
-    user_lower = user.lower()
-    id = [
-        "who are you", "made you", "creator", "owner", 
-        "tum kon ho", "kisne banaya", "kis ne banaya", 
-        "kis ne bnaya", "tumhe kisne", "tumhe kis ne"
-    ]
-    qid = ["quiz", "test", "mcq"]
-    with chat_block:
-        with st.chat_message('user'):
-            st.write(f"**User:** {user}")  
-    if any(w in user_lower for w in id):
-        reply = "Hello Buddy, Iam Arsalan's AI.A simple AI Programmed By genius Arsalan. "
-        st.session_state.memory.append({"role": "User", "text": user})
-        st.session_state.memory.append({"role": "AI", "text": reply})
-        st.rerun()       
-    elif any(q in user_lower for q in qid):
+
+if prompt_input:
+    final_user_text = ""
+    
+    if prompt_input.audio:
+        with st.spinner("Converting Voice to Text..."):
+            try:
+                audio_data = prompt_input.audio.read()
+                transcribe_prompt = "Transcribe this audio strictly into text. Do not add any extra explanation or greeting."
+                audio_part = {"data": audio_data, "mime_type": "audio/wav"}
+                
+                stt_res = client.models.generate_content(
+                    model="gemini-3.5-flash-lite",
+                    contents=[audio_part, transcribe_prompt]
+                )
+                final_user_text = stt_res.text.strip()
+            except Exception as e:
+                st.error(f"Voice Recognition Error: {e}")
+                final_user_text = "Audio Message"
+    elif prompt_input.text:
+        final_user_text = prompt_input.text
+
+    if final_user_text:
+        inp = []
+        if upl is not None:
+            img = Image.open(upl)
+            inp.append(img)
+            inp.append(f"Analyze The Image based on User's Request: {final_user_text}")
+        else:
+            inp.append(final_user_text)
+
+        user_lower = final_user_text.lower()
+        id = [
+            "who are you", "made you", "creator", "owner", 
+            "tum kon ho", "kisne banaya", "kis ne banaya", 
+            "kis ne bnaya", "tumhe kisne", "tumhe kis ne"
+        ]
+        
         with chat_block:
-            with st.spinner("Generating Quiz !"):
+            with st.chat_message('user'):
+                st.write(f"**User:** {final_user_text}")  
+        
+        if any(w in user_lower for w in id):
+            reply = "Hello Buddy, I am Arsalan's AI. A simple AI Programmed By genius Arsalan."
+        else:
+            with st.spinner("Arsalan's AI is thinking..."):
                 try:
-                    quiz = f"Generate multiple choice quiz based on {user}."
-                    qu_res = client.models.generate_content(
-                            model="gemini-3.5-flash-lite",
-                            contents=quiz
-                        )
-                    st.session_state.memory.append({"role": "User", "text": user})
-                    st.session_state.memory.append({"role": "AI", "text": qu_res.text})                
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"Quiz error, {e}")
-    else:
-        with chat_block:
-            with st.spinner("AI is thinking !"):
-                try:
-                    context = "system: You are Arsalan's assistant.A Teenager Tech genius."
-                    for c in st.session_state.memory:
-                        context += f"{c['role']} : {c['text']}\n"
-                    context += f"User:{user}"
-                    inp.append(context)
                     response = client.models.generate_content(
-                            model="gemini-3.5-flash-lite",
-                            contents=inp
-                        )   
-                    sellang = "en"
-                    if langs == "Urdu":
-                        sellang = "ur"     
-                    tts = gTTS(text=response.text[:200], lang=sellang)
-                    pocket = io.BytesIO()
-                    tts.write_to_fp(pocket)
-                    st.session_state.chat_input_val = ""
-                    st.session_state.memory.append({"role": "User", "text": user})
-                    st.session_state.memory.append({"role": "AI", "text": response.text, "audio": pocket.getvalue()})
-                    st.rerun()
+                        model="gemini-3.5-flash-lite",
+                        contents=inp
+                    )
+                    reply = response.text
                 except Exception as e:
-                    st.error(f"An Error Occured! Please try again! {e}")
-chat_text = ""
-for chat in st.session_state.memory:
-    chat_text += f"{chat['role']}: {chat['text']}\n"
-if chat_text: 
-    st.sidebar.header("Download Chat!")
-    st.sidebar.download_button(
-        label="Download Chat History 📄",
-        data=chat_text,
-        file_name="arsalan_ai_chat.txt",
-        mime="text/plain",
-    )
-st.sidebar.write("---")
+                    reply = f"Error: {e}"
+
+        audio_fp = io.BytesIO()
+        lang_code = "en" if langs == "English" else "ur"
+        try:
+            tts = gTTS(text=reply, lang=lang_code, slow=False)
+            tts.write_to_fp(audio_fp)
+            audio_fp.seek(0)
+            audio_bytes = audio_fp.read()
+        except Exception as e:
+            audio_bytes = None
+
+        st.session_state.memory.append({"role": "User", "text": final_user_text})
+        
+        ai_memory_data = {"role": "AI", "text": reply}
+        if audio_bytes:
+            ai_memory_data["audio"] = audio_bytes
+            
+        st.session_state.memory.append(ai_memory_data)
+        st.rerun()

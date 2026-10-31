@@ -126,7 +126,7 @@ upl = st.sidebar.file_uploader(
 )
 
 if upl:
-    st.sidebar.image(upl, caption="Uploaded Image")
+    st.sidebar.image(upl, caption="Uploaded Image",width=50)
 
 st.sidebar.write("---")
 st.sidebar.header("Additional Utilities")

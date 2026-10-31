@@ -230,8 +230,8 @@ def ask_gemini(prompt, uploaded_image=None, audio_file=None):
 
     if uploaded_image is not None:
         image = Image.open(uploaded_image).convert("RGB")
-        resized_image = image.resize((50, image.height), Image.Resampling.LANCZOS)
-        message_content.append(resized_image)
+        
+        message_content.append(image.resize(50,50))
 
     if audio_file is not None:
         audio_part = types.Part.from_bytes(

@@ -66,7 +66,7 @@ p, label {
 }
 .stLinkButton > a:hover {
     background-color: #00f0ff !important;
-    color: #000000 !important;
+    color: # !important;
     box-shadow: 0 0 15px #00f0ff !important;
 }
 [data-testid="stChatInput"]:focus-within {
@@ -88,20 +88,24 @@ hr {
     border-color: #00f0ff !important;
     opacity: 0.3;
 }
+a, a:hover, a:focus, a:active {
+    color: #00f0ff !important;
+    text-decoration: none !important;
+}
+
+a:hover {
+    color: #39ff14 !important;
+    background: #0d1527 !important;
+    border-color: #00f0ff !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
-col1, col2 = st.columns([1, 5])
+st.logo("images.jpg")
 
-with col1:
-    try:
-        st.image("images.jpg", width=100)
-    except Exception:
-        st.write("🤖")
 
-with col2:
-    st.title("Arsalan's AI v1.0")
-    st.caption("Made by Arsalan Ali Khan | Teenager Genius 😎")
+st.title("Arsalan's AI v1.0")
+st.caption("Made by Arsalan Ali Khan | Teenager Genius 😎")
 
 st.write("---")
 

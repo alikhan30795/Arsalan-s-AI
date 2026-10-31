@@ -12,7 +12,7 @@ st.set_page_config(
     layout="wide"
 )
 
-MODEL = "gemini-2.5-flash"
+MODEL = "gemini-3.5-flash-lite"
 
 try:
     client = genai.Client(api_key=st.secrets["ARSALAN"])
@@ -66,7 +66,7 @@ p, label {
 }
 .stLinkButton > a:hover {
     background-color: #00f0ff !important;
-    color: #05080e !important;
+    color: #000000 !important;
     box-shadow: 0 0 15px #00f0ff !important;
 }
 [data-testid="stChatInput"]:focus-within {

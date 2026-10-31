@@ -126,7 +126,7 @@ upl = st.sidebar.file_uploader(
 )
 
 if upl:
-    st.sidebar.image(upl, caption="Uploaded Image",width=50)
+    st.sidebar.image(upl,width=50)
 
 st.sidebar.write("---")
 st.sidebar.header("Additional Utilities")
@@ -229,7 +229,7 @@ def ask_gemini(prompt, uploaded_image=None, audio_file=None):
     message_content = [prompt]
 
     if uploaded_image is not None:
-        image = Image.open(uploaded_image).convert("RGB")
+        image = Image.open(uploaded_image,width=50).convert("RGB")
         message_content.append(image)
 
     if audio_file is not None:
